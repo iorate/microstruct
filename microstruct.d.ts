@@ -16,7 +16,7 @@ export declare const object: <S extends Readonly<Record<string, Struct>>>(s: S) 
     [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
 }>;
 export declare const optional: <T>(s: Struct<T>) => Struct<T | undefined>;
-export declare const record: <KS extends Struct<string>, VS extends Struct>(ks: KS, vs: VS) => Struct<Record<Infer<KS>, Infer<VS>>>;
+export declare const record: <K extends string, V>(ks: Struct<K>, vs: Struct<V>) => Struct<string extends K ? Record<string, V> : Partial<Record<K, V>>>;
 export declare const string: () => Struct<string>;
 export declare const tuple: <SS extends readonly Struct[]>(ss: readonly [...SS]) => Struct<{
     [I in keyof SS]: SS[I] extends infer S ? (S extends Struct ? Infer<S> : never) : never;

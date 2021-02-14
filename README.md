@@ -78,22 +78,6 @@ if (is(data, User)) {
 }
 ```
 
-### `record` Rejects `enums` and `literal` as Keys
-
-`record` rejects `enums` and `literal` as keys, because they may produce wrong type annotations.
-
-```typescript
-import { assert, enums, record, string } from 'superstruct';
-
-const User = record(enums(['id', 'name']), string());
-
-const data: unknown = { id: 'jsmith' };
-
-assert(data, User);
-
-// 'data.name' is typed as 'string', but actually 'undefined'.
-```
-
 ### Support for `parseJSON()`
 
 `parseJSON()` returns a JavaScript value described by a JSON string, or `undefined` if parse or validation fails. It never throws an exception.

@@ -51,10 +51,10 @@ export const object: <S extends Readonly<Record<string, Struct>>>(
 export const optional: <T>(s: Struct<T>) => Struct<T | undefined> = s => value =>
   typeStartsWith('u')(value) || s(value);
 
-export const record: <KS extends Struct<string>, VS extends Struct>(
-  ks: KS,
-  vs: VS,
-) => Struct<Record<Infer<KS>, Infer<VS>>> = (ks, vs) => value =>
+export const record: <K extends string, V>(
+  ks: Struct<K>,
+  vs: Struct<V>,
+) => Struct<string extends K ? Record<string, V> : Partial<Record<K, V>>> = (ks, vs) => value =>
   typeStartsWith('o')(value) &&
   value &&
   keys(value as ReadonlyObject).every(k => ks(k) && vs((value as ReadonlyObject)[k]));
