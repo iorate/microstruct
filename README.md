@@ -112,7 +112,7 @@ if (value !== undefined) {
 ## Getting Started
 
 ```shell
-npm i -D microstruct
+npm i microstruct
 ```
 
 Note: To use Microstruct with TypeScript, `typescript >=4.1.2` is required.
