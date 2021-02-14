@@ -21,9 +21,10 @@ export const array: <T>(es: Struct<T>) => Struct<T[]> = es => value =>
 
 export const boolean: () => Struct<boolean> = (unused?: unknown) => typeStartsWith('b');
 
-export const enums: <ES extends readonly number[] | readonly string[]>(
-  es: ES,
-) => Struct<ES[number]> = es => value => (es as readonly unknown[]).includes(value);
+export const enums: <E extends number | string>(
+  es: readonly E[],
+) => Struct<E[] extends number[] ? E : E[] extends string[] ? E : never> = es => value =>
+  (es as readonly unknown[]).includes(value);
 
 export const integer: () => Struct<number> = (unused?: unknown) => value => Number.isInteger(value);
 

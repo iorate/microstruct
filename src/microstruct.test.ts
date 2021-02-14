@@ -61,10 +61,10 @@ test('boolean structs accept the boolean values true and false', () => {
 });
 
 test('enums structs validate that a value is one of a specific set of literals values', () => {
-  testValid('Jane', enums(['Jane', 'John', 'Jack', 'Jill'] as const));
-  testValid(42, enums([23, 42] as const));
-  testInvalid('Joe', enums(['Jane', 'John', 'Jack', 'Jill'] as const));
-  testInvalid('23', enums([23, 42] as const));
+  testValid('Jane', enums(['Jane', 'John', 'Jack', 'Jill']));
+  testValid(42, enums([23, 42]));
+  testInvalid('Joe', enums(['Jane', 'John', 'Jack', 'Jill']));
+  testInvalid('23', enums([23, 42]));
 });
 
 test('integer structs validate that a value is an integer', () => {
