@@ -1,0 +1,88 @@
+# Microstruct
+
+Less than 500B (gzipped) subset of [Superstruct](https://github.com/ianstormtaylor/superstruct) specialized in validating and typing data decoded from JSON.
+
+## Example
+
+```typescript
+// ref: https://github.com/ianstormtaylor/superstruct#usage
+
+import { is, object, number, string, array } from 'microstruct';
+
+const Article = object({
+  id: number(),
+  title: string(),
+  tags: array(string()),
+  author: object({
+    id: number(),
+  }),
+});
+
+const data: unknown = {
+  id: 34,
+  title: 'Hello World',
+  tags: ['news', 'features'],
+  author: {
+    id: 1,
+  },
+};
+
+if (is(data, Article)) {
+  // 'data' is guaranteed to be of type '{ id: number; title: string; tags:
+  // string[]; author: { id: number } }' in this block.
+}
+```
+
+## Main Differences to Superstruct
+
+### No Support for `assert()`, `create()` or `validate()`
+
+Of the core methods of Superstruct, only `is()` is supported.
+
+### No Support for Classes or Functions
+
+Because Microstruct is specialized in validating and typing data decoded from JSON, structs validating classes and functions such as `date` and `func` are not supported.
+
+However, you can still define them yourself.
+
+```typescript
+const date = define<Date>(value =>
+  value instanceof Date && !Number.isNaN(value.getTime()));
+
+const data: unknown = new Date();
+
+if (is(data, date)) {
+  // 'data' is guaranteed to be of type 'Date' in this block.
+}
+```
+
+### Support for `parseJSON()`
+
+`parseJSON()` returns a JavaScript value described by a JSON string, or `undefined` if parse or validation fails. It never throws an exception.
+
+```typescript
+const json = '{"result":true, "count":42}';
+
+const value = parseJSON(json, object({ result: boolean(), count: number() }));
+
+if (value !== undefined) {
+  // 'value' is guaranteed to be of type `{ result: boolean; count: number }` in
+  // this block.
+}
+```
+
+## Getting Started
+
+```shell
+npm i -D microstruct
+```
+
+Note: To use Microstruct with TypeScript, `typescript >=4.1.2` is required.
+
+## Author
+
+[iorate](https://github.com/iorate) ([Twitter](https://twitter.com/iorate))
+
+## License
+
+Microstruct is licensed under [MIT License](LICENSE.txt).
