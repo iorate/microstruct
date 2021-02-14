@@ -3,7 +3,7 @@ export declare type Infer<S extends Struct> = S extends Struct<infer T> ? T : ne
 export declare const any: () => Struct<any>;
 export declare const array: <T>(es: Struct<T>) => Struct<T[]>;
 export declare const boolean: () => Struct<boolean>;
-export declare const enums: <E extends number | string>(es: readonly E[]) => Struct<E[] extends number[] ? E : E[] extends string[] ? E : never>;
+export declare const enums: <E extends number | string>(es: readonly E[]) => Struct<E>;
 export declare const integer: () => Struct<number>;
 export declare const intersection: <S extends Struct>(ss: readonly S[]) => Struct<(S extends Struct ? (t: Infer<S>) => void : never) extends (t: infer T) => void ? T : never>;
 export declare const literal: <L extends boolean | number | string>(l: L) => Struct<L>;
