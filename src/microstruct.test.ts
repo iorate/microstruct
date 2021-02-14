@@ -117,11 +117,11 @@ test('object structs validate that a value is an object and that each of its pro
   testValid({ id: 1, name: 'Jane Smith' }, object({ id: number(), name: string() }));
   testValid({ id: 1, name: 'Jane Smith' }, object({ id: number() }));
   testValid({ 0: 1, 1: 2, 2: 3 }, object({ 0: number(), 1: number(), 2: number() }));
+  testValid([1, 2, 3], object({ length: number(), 0: number(), 1: number(), 2: number() }));
   testInvalid('id', object({ id: number(), name: string() }));
   testInvalid(1, object({ id: number(), name: string() }));
   testInvalid({ id: 1 }, object({ id: number(), name: string() }));
   testInvalid({ id: 1, name: false }, object({ id: number(), name: string() }));
-  testInvalid([1, 2, 3], object({ 0: number(), 1: number(), 2: number() }));
 });
 
 test('optional structs validate that a value matches a specific struct, or that it is undefined', () => {

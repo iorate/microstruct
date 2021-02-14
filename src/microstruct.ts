@@ -6,8 +6,6 @@ const typeStartsWith = (char: string) => (value: unknown) => (typeof value)[0] =
 
 const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
 
-const isObject = (value: unknown) => typeStartsWith('o')(value) && value && !isArray(value);
-
 const keys = (value: ReadonlyObject) => Object.keys(value);
 
 export type Struct<T = any> = (value: unknown, type?: T) => unknown;
@@ -47,7 +45,8 @@ export const object: <S extends Readonly<Record<string, Struct>>>(
 ) => Struct<
   { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } &
     { [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]> }
-> = s => value => isObject(value) && keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
+> = s => value =>
+  typeStartsWith('o')(value) && value && keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
 
 export const optional: <T>(s: Struct<T>) => Struct<T | undefined> = s => value =>
   typeStartsWith('u')(value) || s(value);
@@ -56,7 +55,8 @@ export const record: <KS extends Struct<string>, VS extends Struct>(
   ks: KS,
   vs: VS,
 ) => Struct<Record<Infer<KS>, Infer<VS>>> = (ks, vs) => value =>
-  isObject(value) &&
+  typeStartsWith('o')(value) &&
+  value &&
   keys(value as ReadonlyObject).every(k => ks(k) && vs((value as ReadonlyObject)[k]));
 
 export const string: () => Struct<string> = (unused?: unknown) => typeStartsWith('s');
