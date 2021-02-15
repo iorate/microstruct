@@ -1,7 +1,7 @@
 import {
   Struct,
   is,
-  parseJSON,
+  parse,
   any,
   array,
   boolean,
@@ -186,7 +186,7 @@ test('unknown structs accept unknown value as valid without loosening its type t
   testValid({ also: 'valid' }, unknown());
 });
 
-test('define take validator functions that return either true/false', () => {
+test('define structs take validator functions that return either true/false', () => {
   testValid(
     42,
     define<number>(n => n === 42),
@@ -198,14 +198,14 @@ test('define take validator functions that return either true/false', () => {
 });
 
 function testValidJSON<T>(json: string, s: Struct<T>): void {
-  expect(parseJSON(json, s)).toEqual(JSON.parse(json));
+  expect(parse(json, s)).toEqual(JSON.parse(json));
 }
 
 function testInvalidJSON<T>(json: string, s: Struct<T>): void {
-  expect(parseJSON(json, s)).toBe(undefined);
+  expect(parse(json, s)).toBe(undefined);
 }
 
-test('parseJSON parse a JSON string and validate it', () => {
+test('parse() returns a typed value parsed from a JSON string if it is valid', () => {
   testValidJSON('{"result":true, "count":42}', object({ result: boolean(), count: number() }));
   testInvalidJSON('{"result":true, "count":42}', object({ result: boolean(), count: string() }));
   testInvalidJSON('{"result":true, "count":42', object({ result: boolean(), count: number() }));

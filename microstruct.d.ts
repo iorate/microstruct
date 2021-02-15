@@ -26,4 +26,4 @@ export declare const union: <S extends Struct>(ss: readonly S[]) => Struct<S ext
 export declare const unknown: () => Struct<unknown>;
 export declare const define: <T>(p: (value: unknown) => boolean) => Struct<T>;
 export declare const is: <T>(value: unknown, s: Struct<T>) => value is T;
-export declare const parseJSON: <T>(json: string, s: Struct<T>) => T | undefined;
+export declare const parse: <T>(json: string, s: Struct<T>) => T | undefined;

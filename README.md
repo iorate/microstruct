@@ -78,14 +78,14 @@ if (is(data, User)) {
 }
 ```
 
-### Support for `parseJSON()`
+### `parse()`: A Type-safe JSON Parser
 
-`parseJSON()` returns a JavaScript value described by a JSON string, or `undefined` if parse or validation fails. It never throws an exception.
+`parse()` returns a typed value parsed from a JSON string if it is valid, otherwise `undefined`.
 
 ```typescript
 const json = '{"result":true, "count":42}';
 
-const value = parseJSON(json, object({ result: boolean(), count: number() }));
+const value = parse(json, object({ result: boolean(), count: number() }));
 
 if (value !== undefined) {
   // 'value' is guaranteed to be of type `{ result: boolean; count: number }` in
@@ -99,7 +99,7 @@ if (value !== undefined) {
 npm i microstruct
 ```
 
-Note: To use Microstruct with TypeScript, `typescript >=4.1.2` is required.
+To use Microstruct with TypeScript, `typescript >=4.1.2` is required.
 
 ## Author
 

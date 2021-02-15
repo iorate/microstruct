@@ -79,7 +79,7 @@ export const define: <T>(p: (value: unknown) => boolean) => Struct<T> = p => p;
 
 export const is = <T>(value: unknown, s: Struct<T>): value is T => !!s(value);
 
-export const parseJSON = <T>(json: string, s: Struct<T>): T | undefined => {
+export const parse = <T>(json: string, s: Struct<T>): T | undefined => {
   try {
     const v: unknown = JSON.parse(json);
     if (s(v)) {
