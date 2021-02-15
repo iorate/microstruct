@@ -66,7 +66,7 @@ const User = object({
   name: string(),
 });
 
-const data = {
+const data: unknown = {
   id: 1,
   name: 'Jane Smith',
   email: 'jane@example.com',
