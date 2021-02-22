@@ -88,7 +88,7 @@ const json = '{"result":true, "count":42}';
 const value = parse(json, object({ result: boolean(), count: number() }));
 
 if (value !== undefined) {
-  // 'value' is guaranteed to be of type `{ result: boolean; count: number }` in
+  // 'value' is guaranteed to be of type '{ result: boolean; count: number }' in
   // this block.
 }
 ```
