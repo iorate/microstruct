@@ -80,12 +80,12 @@ test('integer structs validate that a value is an integer', () => {
 test('intersection structs validate that a value matches all of many structs. It takes existing struct objects as arguments', () => {
   testValid(
     { a: 1, b: 2, c: 3 },
-    intersection([object({ a: number(), b: number() }), object({ a: number(), c: number() })]),
+    intersection([type({ a: number(), b: number() }), type({ a: number(), c: number() })]),
   );
   testValid({ a: 1, b: 2, c: 3 }, intersection([]));
   testInvalid(
     { a: 1, b: 2 },
-    intersection([object({ a: number(), b: number() }), object({ a: number(), c: number() })]),
+    intersection([type({ a: number(), b: number() }), type({ a: number(), c: number() })]),
   );
 });
 
@@ -115,9 +115,9 @@ test('nullable structs validate that a value matches a specific struct, or that 
 
 test('object structs validate that a value is an object and that each of its properties match a specific type as well', () => {
   testValid({ id: 1, name: 'Jane Smith' }, object({ id: number(), name: string() }));
-  testValid({ id: 1, name: 'Jane Smith' }, object({ id: number() }));
   testValid({ 0: 1, 1: 2, 2: 3 }, object({ 0: number(), 1: number(), 2: number() }));
   testValid([1, 2, 3], object({ length: number(), 0: number(), 1: number(), 2: number() }));
+  testInvalid({ id: 1, name: 'Jane Smith' }, object({ id: number() }));
   testInvalid('id', object({ id: number(), name: string() }));
   testInvalid(1, object({ id: number(), name: string() }));
   testInvalid({ id: 1 }, object({ id: number(), name: string() }));
@@ -159,7 +159,7 @@ test('tuple structs validate that a value is an array of a specific length with 
   testInvalid(['a'], tuple([]));
 });
 
-test('type is an alias of object', () => {
+test('type structs validate that a value has a set of properties on it, but it does not assert anything about unspecified properties', () => {
   testValid({ id: 1, name: 'Jane Smith' }, type({ id: number(), name: string() }));
   testValid({ id: 1, name: 'Jane Smith' }, type({ id: number() }));
   testValid({ a: 23, b: 42 }, type({ a: number(), b: optional(number()) }));

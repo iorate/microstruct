@@ -8,6 +8,8 @@ const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
 
 const keys = (value: ReadonlyObject) => Object.keys(value);
 
+const keysLength = (value: ReadonlyObject) => keys(value).length;
+
 export type Struct<T = any> = (value: unknown, type?: T) => unknown;
 
 export type Infer<S extends Struct> = S extends Struct<infer T> ? T : never;
@@ -43,10 +45,10 @@ export const number: () => Struct<number> = (unused?: unknown) => typeStartsWith
 export const object: <S extends Readonly<Record<string, Struct>>>(
   s: S,
 ) => Struct<
-  { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } &
-    { [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]> }
-> = s => value =>
-  typeStartsWith('o')(value) && value && keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
+  { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } & {
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
+  }
+> = s => value => type(s)(value) && keysLength(value as ReadonlyObject) <= keysLength(s);
 
 export const optional: <T>(s: Struct<T>) => Struct<T | undefined> = s => value =>
   typeStartsWith('u')(value) || s(value);
@@ -63,11 +65,18 @@ export const string: () => Struct<string> = (unused?: unknown) => typeStartsWith
 
 export const tuple: <SS extends readonly Struct[]>(
   ss: readonly [...SS],
-) => Struct<
-  { [I in keyof SS]: SS[I] extends infer S ? (S extends Struct ? Infer<S> : never) : never }
-> = ss => value => isArray(value) && value.length == ss.length && value.every((e, i) => ss[i]!(e));
+) => Struct<{
+  [I in keyof SS]: SS[I] extends infer S ? (S extends Struct ? Infer<S> : never) : never;
+}> = ss => value => isArray(value) && value.length == ss.length && value.every((e, i) => ss[i]!(e));
 
-export { object as type };
+export const type: <S extends Readonly<Record<string, Struct>>>(
+  s: S,
+) => Struct<
+  { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } & {
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
+  }
+> = s => value =>
+  typeStartsWith('o')(value) && value && keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
 
 export const union: <S extends Struct>(
   ss: readonly S[],

@@ -1,5 +1,5 @@
-export declare type Struct<T = any> = (value: unknown, type?: T) => unknown;
-export declare type Infer<S extends Struct> = S extends Struct<infer T> ? T : never;
+export type Struct<T = any> = (value: unknown, type?: T) => unknown;
+export type Infer<S extends Struct> = S extends Struct<infer T> ? T : never;
 export declare const any: () => Struct<any>;
 export declare const array: <T>(es: Struct<T>) => Struct<T[]>;
 export declare const boolean: () => Struct<boolean>;
@@ -21,7 +21,11 @@ export declare const string: () => Struct<string>;
 export declare const tuple: <SS extends readonly Struct[]>(ss: readonly [...SS]) => Struct<{
     [I in keyof SS]: SS[I] extends infer S ? (S extends Struct ? Infer<S> : never) : never;
 }>;
-export { object as type };
+export declare const type: <S extends Readonly<Record<string, Struct>>>(s: S) => Struct<{
+    [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
+} & {
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
+}>;
 export declare const union: <S extends Struct>(ss: readonly S[]) => Struct<S extends Struct ? Infer<S> : never>;
 export declare const unknown: () => Struct<unknown>;
 export declare const define: <T>(p: (value: unknown) => boolean) => Struct<T>;

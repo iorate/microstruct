@@ -3,6 +3,7 @@
     "esModuleInterop": true,
     "module": "ESNext",
     "moduleResolution": "node",
+    "newLine": "LF",
     "noUncheckedIndexedAccess": true,
     "strict": true,
     "target": "ESNext"

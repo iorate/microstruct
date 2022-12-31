@@ -46,35 +46,14 @@ Because Microstruct is specialized in validating and typing data decoded from JS
 However, you can still define them yourself.
 
 ```typescript
-const date = define<Date>(value =>
-  value instanceof Date && !Number.isNaN(value.getTime()));
+const date = define<Date>(
+  value => value instanceof Date && !Number.isNaN(value.getTime()),
+);
 
 const data: unknown = new Date();
 
 if (is(data, date)) {
   // 'data' is guaranteed to be of type 'Date' in this block.
-}
-```
-
-### `object` Accepts Extra Properties
-
-`object` accepts extra properties like `type`.
-
-```typescript
-const User = object({
-  id: number(),
-  name: string(),
-});
-
-const data: unknown = {
-  id: 1,
-  name: 'Jane Smith',
-  email: 'jane@example.com',
-};
-
-if (is(data, User)) {
-  // 'data' is guaranteed to be of type '{ id: number; name: string }' in this
-  // block.
 }
 ```
 
