@@ -9,9 +9,18 @@
   "types": "microstruct.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/microstruct.js",
-      "import": "./dist/microstruct.esm.js",
-      "umd": "./dist/microstruct.umd.js"
+      "require": {
+        "types": "./microstruct.d.ts",
+        "default": "./dist/microstruct.js"
+      },
+      "import": {
+        "types": "./microstruct.d.ts",
+        "default": "./dist/microstruct.esm.js"
+      },
+      "umd": {
+        "types": "./microstruct.d.ts",
+        "default": "./dist/microstruct.umd.js"
+      }
     }
   },
   "author": "iorate",
