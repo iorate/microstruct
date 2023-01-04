@@ -1,3 +1,11 @@
+type InferObjectOrType<S extends Readonly<Record<string, Struct>>> = {
+    [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
+} & {
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
+};
+type ObjectOrType<S extends Readonly<Record<string, Struct>>> = Struct<{
+    [K in keyof InferObjectOrType<S>]: InferObjectOrType<S>[K];
+}>;
 export type Struct<T = any> = (value: unknown, type?: T) => unknown;
 export type Infer<S extends Struct> = S extends Struct<infer T> ? T : never;
 export declare const any: () => Struct<any>;
@@ -10,24 +18,17 @@ export declare const literal: <L extends boolean | number | string>(l: L) => Str
 export declare const never: () => Struct<never>;
 export declare const nullable: <T>(s: Struct<T>) => Struct<T | null>;
 export declare const number: () => Struct<number>;
-export declare const object: <S extends Readonly<Record<string, Struct>>>(s: S) => Struct<{
-    [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
-} & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
-}>;
+export declare const object: <S extends Readonly<Record<string, Struct>>>(s: S) => ObjectOrType<S>;
 export declare const optional: <T>(s: Struct<T>) => Struct<T | undefined>;
 export declare const record: <K extends string, V>(ks: Struct<K>, vs: Struct<V>) => Struct<string extends K ? Record<string, V> : Partial<Record<K, V>>>;
 export declare const string: () => Struct<string>;
 export declare const tuple: <SS extends readonly Struct[]>(ss: readonly [...SS]) => Struct<{
     [I in keyof SS]: SS[I] extends infer S ? (S extends Struct ? Infer<S> : never) : never;
 }>;
-export declare const type: <S extends Readonly<Record<string, Struct>>>(s: S) => Struct<{
-    [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
-} & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
-}>;
+export declare const type: <S extends Readonly<Record<string, Struct>>>(s: S) => ObjectOrType<S>;
 export declare const union: <S extends Struct>(ss: readonly S[]) => Struct<S extends Struct ? Infer<S> : never>;
 export declare const unknown: () => Struct<unknown>;
 export declare const define: <T>(p: (value: unknown) => boolean) => Struct<T>;
 export declare const is: <T>(value: unknown, s: Struct<T>) => value is T;
 export declare const parse: <T>(json: string, s: Struct<T>) => T | undefined;
+export {};

@@ -2,6 +2,16 @@
 
 type ReadonlyObject = Readonly<Record<string, unknown>>;
 
+type InferObjectOrType<S extends Readonly<Record<string, Struct>>> = {
+  [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
+} & {
+  [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
+};
+
+type ObjectOrType<S extends Readonly<Record<string, Struct>>> = Struct<{
+  [K in keyof InferObjectOrType<S>]: InferObjectOrType<S>[K];
+}>;
+
 const typeStartsWith = (char: string) => (value: unknown) => (typeof value)[0] == char;
 
 const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
@@ -42,13 +52,9 @@ export const nullable: <T>(s: Struct<T>) => Struct<T | null> = s => value =>
 
 export const number: () => Struct<number> = (unused?: unknown) => typeStartsWith('n');
 
-export const object: <S extends Readonly<Record<string, Struct>>>(
-  s: S,
-) => Struct<
-  { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
-  }
-> = s => value => type(s)(value) && keysLength(value as ReadonlyObject) <= keysLength(s);
+export const object: <S extends Readonly<Record<string, Struct>>>(s: S) => ObjectOrType<S> =
+  s => value =>
+    type(s)(value) && keysLength(value as ReadonlyObject) <= keysLength(s);
 
 export const optional: <T>(s: Struct<T>) => Struct<T | undefined> = s => value =>
   typeStartsWith('u')(value) || s(value);
@@ -69,14 +75,9 @@ export const tuple: <SS extends readonly Struct[]>(
   [I in keyof SS]: SS[I] extends infer S ? (S extends Struct ? Infer<S> : never) : never;
 }> = ss => value => isArray(value) && value.length == ss.length && value.every((e, i) => ss[i]!(e));
 
-export const type: <S extends Readonly<Record<string, Struct>>>(
-  s: S,
-) => Struct<
-  { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
-  }
-> = s => value =>
-  typeStartsWith('o')(value) && value && keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
+export const type: <S extends Readonly<Record<string, Struct>>>(s: S) => ObjectOrType<S> =
+  s => value =>
+    typeStartsWith('o')(value) && value && keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
 
 export const union: <S extends Struct>(
   ss: readonly S[],
