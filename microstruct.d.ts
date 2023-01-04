@@ -13,7 +13,7 @@ export declare const number: () => Struct<number>;
 export declare const object: <S extends Readonly<Record<string, Struct>>>(s: S) => Struct<{
     [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
 } & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
 }>;
 export declare const optional: <T>(s: Struct<T>) => Struct<T | undefined>;
 export declare const record: <K extends string, V>(ks: Struct<K>, vs: Struct<V>) => Struct<string extends K ? Record<string, V> : Partial<Record<K, V>>>;
@@ -24,7 +24,7 @@ export declare const tuple: <SS extends readonly Struct[]>(ss: readonly [...SS])
 export declare const type: <S extends Readonly<Record<string, Struct>>>(s: S) => Struct<{
     [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
 } & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
 }>;
 export declare const union: <S extends Struct>(ss: readonly S[]) => Struct<S extends Struct ? Infer<S> : never>;
 export declare const unknown: () => Struct<unknown>;

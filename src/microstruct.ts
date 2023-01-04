@@ -46,7 +46,7 @@ export const object: <S extends Readonly<Record<string, Struct>>>(
   s: S,
 ) => Struct<
   { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
   }
 > = s => value => type(s)(value) && keysLength(value as ReadonlyObject) <= keysLength(s);
 
@@ -73,7 +73,7 @@ export const type: <S extends Readonly<Record<string, Struct>>>(
   s: S,
 ) => Struct<
   { [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]> } & {
-    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Infer<S[K]>;
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
   }
 > = s => value =>
   typeStartsWith('o')(value) && value && keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
