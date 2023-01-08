@@ -1,17 +1,5 @@
 /* eslint-disable no-empty, @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unused-vars */
 
-type ReadonlyObject = Readonly<Record<string, unknown>>;
-
-type InferObjectOrType<S extends Readonly<Record<string, Struct>>> = {
-  [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
-} & {
-  [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
-};
-
-type ObjectOrType<S extends Readonly<Record<string, Struct>>> = Struct<{
-  [K in keyof InferObjectOrType<S>]: InferObjectOrType<S>[K];
-}>;
-
 export type Struct<T = any> = (value: unknown, type?: T) => unknown;
 
 export type Infer<S extends Struct> = S extends Struct<infer T> ? T : never;
@@ -93,3 +81,16 @@ export const parse = <T>(json: string, s: Struct<T>): T | undefined => {
     }
   } catch {}
 };
+
+type ReadonlyObject = Readonly<Record<string, unknown>>;
+
+type ObjectOrType<
+  S extends Readonly<Record<string, Struct>>,
+  T = {
+    [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
+  } & {
+    [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
+  },
+> = Struct<{
+  [K in keyof T]: T[K];
+}>;
