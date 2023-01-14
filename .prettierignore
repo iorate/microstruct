@@ -1,4 +1,2 @@
 /.yarn
 /dist
-/node_modules
-*.d.ts

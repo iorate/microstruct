@@ -1,3 +1,4 @@
+import { expect, test } from '@jest/globals';
 import {
   Struct,
   is,
@@ -21,7 +22,7 @@ import {
   union,
   unknown,
   define,
-} from '..';
+} from './microstruct';
 
 // ref: https://docs.superstructjs.org/api-reference/types
 

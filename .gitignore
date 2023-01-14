@@ -1,5 +1,5 @@
-/.yarn/*
-!/.yarn/plugins
-!/.yarn/releases
+.yarn/*
+!.yarn/plugins
+!.yarn/releases
 /dist
-/node_modules
+node_modules
