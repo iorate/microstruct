@@ -33,9 +33,10 @@ export const nullable: <T>(s: Struct<T>) => Struct<T | null> = s => value =>
 
 export const number: () => Struct<number> = (unused?: unknown) => value => typeof value == 'number';
 
-export const object: <S extends Readonly<Record<string, Struct>>>(s: S) => ObjectOrType<S> =
-  s => value =>
-    type(s)(value) && Object.keys(value as ReadonlyObject).length <= Object.keys(s).length;
+export const object: <S extends Readonly<Record<string, Struct>>>(
+  s: S,
+) => Struct<InferObjectOrType<S>> = s => value =>
+  type(s)(value) && Object.keys(value as ReadonlyObject).length <= Object.keys(s).length;
 
 export const optional: <T>(s: Struct<T>) => Struct<T | undefined> = s => value =>
   typeof value == 'undefined' || s(value);
@@ -52,16 +53,15 @@ export const string: () => Struct<string> = (unused?: unknown) => value => typeo
 
 export const tuple: <SS extends readonly Struct[]>(
   ss: readonly [...SS],
-) => Struct<{
-  [I in keyof SS]: SS[I] extends infer S ? (S extends Struct ? Infer<S> : never) : never;
-}> = ss => value =>
-  Array.isArray(value) && value.length == ss.length && value.every((e, i) => ss[i]!(e));
+) => Struct<InferTuple<SS>> = ss => value =>
+  Array.isArray(value) && value.length <= ss.length && ss.every((s, i) => s(value[i]));
 
-export const type: <S extends Readonly<Record<string, Struct>>>(s: S) => ObjectOrType<S> =
-  s => value =>
-    typeof value == 'object' &&
-    value &&
-    Object.keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
+export const type: <S extends Readonly<Record<string, Struct>>>(
+  s: S,
+) => Struct<InferObjectOrType<S>> = s => value =>
+  typeof value == 'object' &&
+  value &&
+  Object.keys(s).every(k => s[k]!((value as ReadonlyObject)[k]));
 
 export const union: <S extends Struct>(
   ss: readonly S[],
@@ -79,18 +79,30 @@ export const parse = <T>(json: string, s: Struct<T>): T | undefined => {
     if (s(v)) {
       return v as T;
     }
-  } catch {}
+  } catch (unused: unknown) {}
 };
 
 type ReadonlyObject = Readonly<Record<string, unknown>>;
 
-type ObjectOrType<
+type InferObjectOrType<
   S extends Readonly<Record<string, Struct>>,
   T = {
     [K in keyof S as undefined extends Infer<S[K]> ? never : K]: Infer<S[K]>;
   } & {
     [K in keyof S as undefined extends Infer<S[K]> ? K : never]?: Exclude<Infer<S[K]>, undefined>;
   },
-> = Struct<{
-  [K in keyof T]: T[K];
-}>;
+> = { [K in keyof T]: T[K] };
+
+type InferTuple<
+  SS extends readonly Struct[],
+  I extends readonly 0[] = [],
+  T extends readonly unknown[] = [],
+> = I['length'] extends SS['length']
+  ? T
+  : InferTuple<
+      SS,
+      [...I, 0],
+      undefined extends Infer<SS[I['length']]>
+        ? [...T, Exclude<Infer<SS[I['length']]>, undefined>?]
+        : [...T, Infer<SS[I['length']]>]
+    >;

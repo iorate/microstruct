@@ -158,6 +158,15 @@ test('tuple structs validate that a value is an array of a specific length with 
   testInvalid(['a', 1], tuple([string(), number(), boolean()]));
   testInvalid(['a', 1, true, []], tuple([string(), number(), boolean()]));
   testInvalid(['a'], tuple([]));
+
+  // optional
+  testValid(['a', 1], tuple([optional(string()), optional(number())]));
+  testValid(['a', 1], tuple([string(), optional(number())]));
+  testValid(['a', 1], tuple([string(), number(), optional(boolean())]));
+  testValid(['a', 1], tuple([string(), optional(number()), optional(boolean())]));
+  testValid([], tuple([optional(string())]));
+  testInvalid(['a', 1], tuple([optional(number()), optional(number())]));
+  testInvalid(['a', 1], tuple([string(), optional(string())]));
 });
 
 test('type structs validate that a value has a set of properties on it, but it does not assert anything about unspecified properties', () => {
