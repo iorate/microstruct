@@ -36,7 +36,7 @@ export const number: () => Struct<number> = (unused?: unknown) => value => typeo
 export const object: <S extends Readonly<Record<string, Struct>>>(
   s: S,
 ) => Struct<InferObjectOrType<S>> = s => value =>
-  type(s)(value) && Object.keys(value as ReadonlyObject).length <= Object.keys(s).length;
+  type(s)(value) && Object.keys(value as ReadonlyObject).every(k => s[k]);
 
 export const optional: <T>(s: Struct<T>) => Struct<T | undefined> = s => value =>
   typeof value == 'undefined' || s(value);

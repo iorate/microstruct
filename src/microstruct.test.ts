@@ -123,6 +123,19 @@ test('object structs validate that a value is an object and that each of its pro
   testInvalid(1, object({ id: number(), name: string() }));
   testInvalid({ id: 1 }, object({ id: number(), name: string() }));
   testInvalid({ id: 1, name: false }, object({ id: number(), name: string() }));
+
+  // optional
+  testValid({ a: 23, b: 42 }, object({ a: optional(number()), b: optional(number()) }));
+  testValid({ a: 23, b: 42 }, object({ a: number(), b: optional(number()) }));
+  testValid(
+    { a: 23, b: 42 },
+    object({ a: number(), b: optional(number()), c: optional(number()) }),
+  );
+  testValid({ a: 23, b: 42 }, object({ a: number(), b: number(), c: optional(number()) }));
+  testValid({}, object({ a: optional(number()) }));
+  testInvalid({ a: 23, b: 42 }, object({ a: number(), b: optional(string()) }));
+  testInvalid({ a: 23, b: 42 }, object({ a: number(), c: optional(number()) }));
+  testInvalid({ a: 23 }, object({ b: optional(number()), c: optional(number()) }));
 });
 
 test('optional structs validate that a value matches a specific struct, or that it is undefined', () => {
