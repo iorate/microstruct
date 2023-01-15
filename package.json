@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "exports": {
-    "types": "./dist/microstruct.d.ts",
+    "types": {
+      "require": "./dist/microstruct.d.cts",
+      "default": "./dist/microstruct.d.ts"
+    },
     "require": "./dist/microstruct.cjs",
     "default": "./dist/microstruct.js"
   },
@@ -48,8 +51,9 @@
   ],
   "packageManager": "yarn@3.3.1",
   "scripts": {
-    "build": "microbundle build --format cjs,modern --no-sourcemap",
-    "watch": "microbundle watch --format cjs,modern --no-sourcemap",
+    "build": "run-s build-microbundle build-copyfile",
+    "build-microbundle": "microbundle build --format cjs,modern --no-sourcemap",
+    "build-copyfile": "node -e \"require('node:fs').copyFileSync('dist/microstruct.d.ts', 'dist/microstruct.d.cts')\"",
     "lint": "run-p --print-label lint-eslint lint-prettier lint-tsc",
     "lint-eslint": "eslint .",
     "lint-prettier": "prettier --check --loglevel warn .",
