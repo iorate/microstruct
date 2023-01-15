@@ -23,6 +23,18 @@ import {
   define,
 } from './microstruct';
 
+test('parse() returns a typed value parsed from a JSON string if it is valid', () => {
+  expect(
+    parse('{"result":true, "count":42}', object({ result: boolean(), count: number() })),
+  ).toEqual({ result: true, count: 42 });
+  expect(parse('{"result":true, "count":42}', object({ result: boolean(), count: string() }))).toBe(
+    undefined,
+  );
+  expect(parse('{"result":true, "count":42', object({ result: boolean(), count: number() }))).toBe(
+    undefined,
+  );
+});
+
 // ref: https://docs.superstructjs.org/api-reference/types
 
 test('any structs accept any value as valid', () => {
@@ -219,16 +231,4 @@ test('define structs take validator functions that return either true/false', ()
       define<number>(n => n === 42),
     ),
   ).toBe(false);
-});
-
-test('parse() returns a typed value parsed from a JSON string if it is valid', () => {
-  expect(
-    parse('{"result":true, "count":42}', object({ result: boolean(), count: number() })),
-  ).toEqual({ result: true, count: 42 });
-  expect(parse('{"result":true, "count":42}', object({ result: boolean(), count: string() }))).toBe(
-    undefined,
-  );
-  expect(parse('{"result":true, "count":42', object({ result: boolean(), count: number() }))).toBe(
-    undefined,
-  );
 });

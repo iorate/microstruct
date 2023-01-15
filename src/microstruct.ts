@@ -4,6 +4,17 @@ export type Struct<T = any> = (value: unknown, type?: T) => unknown;
 
 export type Infer<S extends Struct> = S extends Struct<infer T> ? T : never;
 
+export const is = <T>(value: unknown, s: Struct<T>): value is T => !!s(value);
+
+export const parse = <T>(json: string, s: Struct<T>): T | undefined => {
+  try {
+    const v: unknown = JSON.parse(json);
+    if (s(v)) {
+      return v as T;
+    }
+  } catch (unused: unknown) {}
+};
+
 export const any: () => Struct<any> = (unused?: unknown) => value => 1;
 
 export const array: <T>(es: Struct<T>) => Struct<T[]> = es => value =>
@@ -70,17 +81,6 @@ export const union: <S extends Struct>(
 export const unknown: () => Struct<unknown> = (unused?: unknown) => value => 1;
 
 export const define: <T>(p: (value: unknown) => boolean) => Struct<T> = p => p;
-
-export const is = <T>(value: unknown, s: Struct<T>): value is T => !!s(value);
-
-export const parse = <T>(json: string, s: Struct<T>): T | undefined => {
-  try {
-    const v: unknown = JSON.parse(json);
-    if (s(v)) {
-      return v as T;
-    }
-  } catch (unused: unknown) {}
-};
 
 type ReadonlyObject = Readonly<Record<string, unknown>>;
 
