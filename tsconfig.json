@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "newLine": "lf",
     "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true,
     "strict": true,
-    "target": "esnext"
+    "module": "es2015",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   }
 }

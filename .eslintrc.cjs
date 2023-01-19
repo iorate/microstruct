@@ -2,17 +2,25 @@
 
 /** @type { import('eslint').Linter.Config } */
 const config = {
-  root: true,
   ignorePatterns: ['/.yarn', '/dist'],
+  root: true,
   reportUnusedDisableDirectives: true,
   overrides: [
     {
-      files: ['*.cjs'],
+      files: ['*.cjs', '*.js'],
       extends: ['eslint:recommended', 'prettier'],
       env: {
         es2022: true,
         node: true,
       },
+      overrides: [
+        {
+          files: ['*.js'],
+          parserOptions: {
+            sourceType: 'module',
+          },
+        },
+      ],
     },
     {
       files: ['*.ts'],
