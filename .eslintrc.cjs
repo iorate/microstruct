@@ -1,26 +1,21 @@
 // @ts-check
 
-/** @type { import('eslint').Linter.Config } */
+/** @type {import('eslint').Linter.Config} */
 const config = {
   ignorePatterns: ['/.yarn', '/dist'],
   root: true,
+  env: {
+    es2022: true,
+    node: true,
+  },
+  extends: ['eslint:recommended', 'prettier'],
   reportUnusedDisableDirectives: true,
   overrides: [
     {
-      files: ['*.cjs', '*.js'],
-      extends: ['eslint:recommended', 'prettier'],
-      env: {
-        es2022: true,
-        node: true,
+      files: ['*.js'],
+      parserOptions: {
+        sourceType: 'module',
       },
-      overrides: [
-        {
-          files: ['*.js'],
-          parserOptions: {
-            sourceType: 'module',
-          },
-        },
-      ],
     },
     {
       files: ['*.ts'],
@@ -32,6 +27,9 @@ const config = {
       ],
       parserOptions: {
         project: './tsconfig.json',
+      },
+      rules: {
+        '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       },
     },
   ],

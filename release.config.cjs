@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @type {import('semantic-release').Options } */
+/** @type {import('semantic-release').Options} */
 const config = {
   branches: ['main'],
 };

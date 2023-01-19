@@ -1,11 +1,11 @@
 # Microstruct
 
-Less than 500B (gzipped) subset of [Superstruct](https://github.com/ianstormtaylor/superstruct) specialized in validating and typing data decoded from JSON.
+Less than 1KB (gzipped) subset of [Superstruct](https://github.com/ianstormtaylor/superstruct) specialized in validating types of data decoded from JSON.
 
 ## Example
 
 ```typescript
-// ref: https://github.com/ianstormtaylor/superstruct#usage
+// https://github.com/ianstormtaylor/superstruct#usage
 
 import { is, object, number, string, array } from 'microstruct';
 
@@ -28,38 +28,24 @@ const data: unknown = {
 };
 
 if (is(data, Article)) {
-  // 'data' is guaranteed to be of type '{ id: number; title: string; tags:
-  // string[]; author: { id: number } }' in this block.
+  // `data` is guaranteed to be of type `{ id: number; title: string; tags:
+  // string[]; author: { id: number } }` in this block.
 }
 ```
 
 ## Main Differences to Superstruct
 
-### No Support for `assert()`, `create()` or `validate()`
+### No Error Messages
 
-Of the core methods of Superstruct, only `is()` is supported.
+Error reporting is outside the scope of Microstruct. Friendly error messages are not necessary unless disclosed to end users.
 
-### No Support for Classes or Functions
+### No Support for `create` and `mask`
 
-Because Microstruct is specialized in validating and typing data decoded from JSON, structs validating classes and functions such as `date` and `func` are not supported.
+Because Microstruct is specialized in validating types of data decoded from JSON, `create` and `mask` are not supported.
 
-However, you can still define them yourself.
+### `parse`: A Type-safe JSON Parser
 
-```typescript
-const date = define<Date>(
-  value => value instanceof Date && !Number.isNaN(value.getTime()),
-);
-
-const data: unknown = new Date();
-
-if (is(data, date)) {
-  // 'data' is guaranteed to be of type 'Date' in this block.
-}
-```
-
-### `parse()`: A Type-safe JSON Parser
-
-`parse()` returns a typed value parsed from a JSON string if it is valid, otherwise `undefined`.
+`parse(json, struct)` returns a typed value parsed from `json` if it is valid, otherwise `undefined`.
 
 ```typescript
 const json = '{"result":true, "count":42}';
@@ -67,7 +53,7 @@ const json = '{"result":true, "count":42}';
 const value = parse(json, object({ result: boolean(), count: number() }));
 
 if (value !== undefined) {
-  // 'value' is guaranteed to be of type '{ result: boolean; count: number }' in
+  // `value` is guaranteed to be of type `{ result: boolean; count: number }` in
   // this block.
 }
 ```
@@ -75,7 +61,9 @@ if (value !== undefined) {
 ## Getting Started
 
 ```shell
-npm i microstruct
+npm install microstruct
+# or
+yarn add microstruct
 ```
 
 To use Microstruct with TypeScript, `typescript >=4.1.2` is required.

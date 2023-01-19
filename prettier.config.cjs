@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @type { import('prettier').Config } */
+/** @type {import('prettier').Config} */
 const config = {
   arrowParens: 'avoid',
   printWidth: 100,
